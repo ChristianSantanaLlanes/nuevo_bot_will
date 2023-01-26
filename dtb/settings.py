@@ -97,8 +97,18 @@ ASGI_APPLICATION = 'dtb.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, default="sqlite:///db.sqlite3"),
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, default="sqlite:///db.sqlite3"),
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'christian$data',
+        'USER': 'christian',
+        'PASSWORD': 'Chris*99',
+        'HOST': 'christian.mysql.pythonanywhere-services.com',
+    }
 }
 
 # Password validation
