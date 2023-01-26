@@ -5,6 +5,7 @@ from telegram.ext import (
     Dispatcher, Filters,
     CommandHandler, MessageHandler,
     CallbackQueryHandler,
+    InlineQueryHandler
 )
 
 from dtb.settings import DEBUG
@@ -17,8 +18,16 @@ from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
+from tgbot.handlers.inline import handlers as inline_handlers
 from tgbot.main import bot
-
+from tgbot.handlers.onboarding.static_text import (
+    ayuda_button,
+    noticias_button,
+    volver_menu_button,
+    volver_button,
+    catalogo_button,
+    faq_buttons,
+    log_button)
 
 def setup_dispatcher(dp):
     """
@@ -36,6 +45,16 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("ask_location", location_handlers.ask_for_location))
     dp.add_handler(MessageHandler(Filters.location, location_handlers.location_handler))
 
+    #regex
+    dp.add_handler(MessageHandler(Filters.regex(fr'{catalogo_button}'), onboarding_handlers.catalogo))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{ayuda_button}'), onboarding_handlers.ayuda))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{noticias_button}'), onboarding_handlers.noticias))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{faq_buttons}'), onboarding_handlers.faq))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{log_button}'), onboarding_handlers.log))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{volver_menu_button}'), onboarding_handlers.command_start))
+    dp.add_handler(MessageHandler(Filters.regex(fr'{volver_button}'), onboarding_handlers.catalogo))
+
+
     # secret level
     dp.add_handler(CallbackQueryHandler(onboarding_handlers.secret_level, pattern=f"^{SECRET_LEVEL_BUTTON}"))
 
@@ -49,8 +68,11 @@ def setup_dispatcher(dp):
 
     # files
     dp.add_handler(MessageHandler(
-        Filters.animation, files.show_file_id,
+        Filters.animation | Filters.photo  | Filters.video | Filters.video_note | Filters.document | Filters.sticker, files.show_file_id,
     ))
+    #regex especiales
+    dp.add_handler(MessageHandler(Filters.text, onboarding_handlers.text_filtro))
+    dp.add_handler(InlineQueryHandler(inline_handlers.inline_query))
 
     # handling errors
     dp.add_error_handler(error.send_stacktrace_to_tg_chat)
