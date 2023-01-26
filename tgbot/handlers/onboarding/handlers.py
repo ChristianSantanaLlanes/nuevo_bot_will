@@ -17,20 +17,12 @@ from catalogo.models import Category, Anime
 
 
 def command_start(update: Update, context: CallbackContext) -> None:
-    # u, created = User.get_user_and_created(update, context)
-    user_id = update.message.from_user.id
-    user_first_name = update.message.from_user.first_name
+    u, created = User.get_user_and_created(update, context)
 
-    user = User.objects.get(user_id)
-
-    if user:
-        text = static_text.start_created.format(first_name=user_first_name)
+    if created:
+        text = static_text.start_created.format(first_name=u.first_name)
     else:
-        username = update.message.from_user.username
-        last_name = update.message.from_user.last_name
-        language_code = update.message.from_user.language_code
-        user = User.objects.create(user_id=user_id,username=username,first_name=user_first_name,last_name=last_name,language_code=language_code,deep_link="")
-        text = static_text.start_not_created.format(first_name=user_first_name)
+        text = static_text.start_not_created.format(first_name=u.first_name)
 
     update.message.reply_sticker(static_text.start_sticker)
     update.message.reply_text(text=text,
