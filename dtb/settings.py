@@ -104,7 +104,7 @@ ASGI_APPLICATION = 'dtb.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'christian$data',
+        'NAME': 'christian$data_bot',
         'USER': 'christian',
         'PASSWORD': 'Chris*99',
         'HOST': 'christian.mysql.pythonanywhere-services.com',
